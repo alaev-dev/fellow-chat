@@ -41,15 +41,31 @@ jobs:
         run: |
           docker build -t giga-fellow-chat:latest .
 
-      - name: Verify Docker image
+      - name: Save Docker image as artifact
         run: |
-          docker images
+          docker save giga-fellow-chat:latest -o giga-fellow-chat.tar
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-image
+          path: giga-fellow-chat.tar
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download Docker image artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: docker-image
+
+      - name: Load Docker image
+        run: |
+          docker load -i giga-fellow-chat.tar
+
       - name: Verify Docker image
         run: |
           docker images
