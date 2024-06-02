@@ -1,79 +1,56 @@
 package ru.alaev.fellowgigachat.chat
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
+import ru.alaev.fellowgigachat.chat.dto.ChatMessageRequest
+import ru.alaev.fellowgigachat.chat.processConnection.ConnectionProcessCommand
+import ru.alaev.fellowgigachat.chat.processConnection.ConnectionProcessCommandHandler
+import ru.alaev.fellowgigachat.chat.processTextMessage.ProcessTextMessageCommand
+import ru.alaev.fellowgigachat.domain.ChatMessage
+import ru.alaev.fellowgigachat.chat.processTextMessage.ProcessTextMessageCommandHandler
+import ru.alaev.fellowgigachat.domain.UserId
 import java.util.concurrent.ConcurrentHashMap
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import org.slf4j.LoggerFactory
-import java.time.LocalDateTime
 
 @Component
-class ChatHandler : TextWebSocketHandler() {
-    private val sessions = ConcurrentHashMap<String, WebSocketSession>()
-    private val userIds = ConcurrentHashMap<WebSocketSession, String>()
-    private val chatHistory = ConcurrentHashMap<String, MutableList<ChatMessage>>()
-    private val objectMapper = jacksonObjectMapper()
+class ChatHandler(
+    private val connectionProcess: ConnectionProcessCommandHandler,
+    private val processTextMessageCommandHandler: ProcessTextMessageCommandHandler,
+    private val objectMapper: ObjectMapper,
+) : TextWebSocketHandler() {
+    private val sessions = ConcurrentHashMap<UserId, WebSocketSession>()
+    private val chatHistory = ConcurrentHashMap<UserId, MutableList<ChatMessage>>()
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
-        val userId = session.uri?.query?.split("=")?.get(1) ?: session.id
-        sessions[userId] = session
-        userIds[session] = userId
+        val userId = getUserId(session)
 
-        log.info("New session established: $userId")
-
-        // Send chat history to the connected user
-        chatHistory[userId]?.let { history ->
-            history.forEach { message ->
-                session.sendMessage(TextMessage(objectMapper.writeValueAsString(message)))
-            }
-        }
+        connectionProcess.handle(ConnectionProcessCommand(session, userId, sessions, chatHistory))
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
-        val payload = message.payload
-        val chatMessage: Message = objectMapper.readValue(payload)
-        val fromUserId = userIds[session] ?: "unknown"
+        val userId = getUserId(session)
+        val chatMessage: ChatMessageRequest = objectMapper.readValue(message.payload)
 
-        val timestamp = LocalDateTime.now()
-        val fullMessage = ChatMessage(
-            from = fromUserId,
-            to = chatMessage.to,
-            message = chatMessage.message,
-            timestamp = timestamp.toString()
-        )
-
-        log.info("Message received: ${chatMessage.message} for ${chatMessage.to} from $fromUserId")
-
-        // Store the message in history
-        chatHistory.computeIfAbsent(chatMessage.to) { mutableListOf() }.add(fullMessage)
-        chatHistory.computeIfAbsent(fromUserId) { mutableListOf() }.add(fullMessage)
-
-        sessions[chatMessage.to]?.sendMessage(TextMessage(objectMapper.writeValueAsString(fullMessage)))
+        processTextMessageCommandHandler.handle(ProcessTextMessageCommand(chatMessage, userId, sessions, chatHistory))
     }
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
-        val userId = userIds[session]
-        if (userId != null) {
-            sessions.remove(userId)
-            userIds.remove(session)
-            log.info("Session closed: $userId")
-        } else {
-            log.info("Session closed: ${session.id}")
-        }
+        val userId = getUserId(session)
+        sessions.remove(userId)
+        log.info("Session closed for: ${userId.value} with status :: ${status.reason} and code :: ${status.code}")
     }
+
+    private fun getUserId(session: WebSocketSession): UserId {
+        return UserId(session.uri?.query?.split("=")?.get(1) ?: session.id)
+    }
+
 
     companion object {
         private val log = LoggerFactory.getLogger(this::class.java)
     }
 }
-
-data class ChatMessage(
-    val from: String,
-    val to: String,
-    val message: String,
-    val timestamp: String
-)
