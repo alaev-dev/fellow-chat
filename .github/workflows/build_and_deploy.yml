@@ -90,5 +90,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             sudo docker pull svalka.cr.cloud.ru/giga-fellow-chat:latest
-            sudo docker stop $(docker ps -a -q)
+            sudo docker stop $(sudo docker ps -a -q)
             sudo docker run -d --name giga-fellow-chat -p 8080:8080 svalka.cr.cloud.ru/giga-fellow-chat:latest
