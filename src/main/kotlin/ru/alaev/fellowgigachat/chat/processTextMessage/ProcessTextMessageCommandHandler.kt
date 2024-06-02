@@ -26,6 +26,11 @@ class ProcessTextMessageCommandHandler(
                 ChatMessageResponse.from(message).toJson(objectMapper)
             )
         )
+        command.sessions[message.from]?.sendMessage(
+            TextMessage(
+                ChatMessageResponse.from(message).toJson(objectMapper)
+            )
+        )
 
         log.info("Message received: ${message.content} for ${message.to.value} from ${message.from.value}")
 
