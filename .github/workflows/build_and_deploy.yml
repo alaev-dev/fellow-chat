@@ -83,6 +83,15 @@ jobs:
     needs: deploy
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: List files in workspace
+        run: ls -la
+
+      - name: Check docker-compose.yml content
+        run: cat docker-compose.yml
+
       - name: Copy Docker Compose file
         uses: appleboy/scp-action@v0.1.3
         with:
