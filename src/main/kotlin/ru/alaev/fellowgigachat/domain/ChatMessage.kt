@@ -1,9 +1,9 @@
 package ru.alaev.fellowgigachat.domain
 
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
-class ChatMessage private constructor(
+data class ChatMessage(
     val id: UUID,
     val from: UserId,
     val to: UserId,
@@ -17,21 +17,6 @@ class ChatMessage private constructor(
         content = message,
         timestamp = LocalDateTime.now(),
     )
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as ChatMessage
-
-        return id == other.id
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
-
-
 }
 
 @JvmInline

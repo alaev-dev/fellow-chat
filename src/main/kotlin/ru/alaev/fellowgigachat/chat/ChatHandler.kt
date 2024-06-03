@@ -12,7 +12,6 @@ import ru.alaev.fellowgigachat.chat.dto.ChatMessageRequest
 import ru.alaev.fellowgigachat.chat.processConnection.ConnectionProcessCommand
 import ru.alaev.fellowgigachat.chat.processConnection.ConnectionProcessCommandHandler
 import ru.alaev.fellowgigachat.chat.processTextMessage.ProcessTextMessageCommand
-import ru.alaev.fellowgigachat.domain.ChatMessage
 import ru.alaev.fellowgigachat.chat.processTextMessage.ProcessTextMessageCommandHandler
 import ru.alaev.fellowgigachat.domain.UserId
 import java.util.concurrent.ConcurrentHashMap
@@ -24,19 +23,18 @@ class ChatHandler(
     private val objectMapper: ObjectMapper,
 ) : TextWebSocketHandler() {
     private val sessions = ConcurrentHashMap<UserId, WebSocketSession>()
-    private val chatHistory = ConcurrentHashMap<UserId, MutableList<ChatMessage>>()
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
         val userId = getUserId(session)
 
-        connectionProcess.handle(ConnectionProcessCommand(session, userId, sessions, chatHistory))
+        connectionProcess.handle(ConnectionProcessCommand(session, userId, sessions))
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         val userId = getUserId(session)
         val chatMessage: ChatMessageRequest = objectMapper.readValue(message.payload)
 
-        processTextMessageCommandHandler.handle(ProcessTextMessageCommand(chatMessage, userId, sessions, chatHistory))
+        processTextMessageCommandHandler.handle(ProcessTextMessageCommand(chatMessage, userId, sessions))
     }
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {

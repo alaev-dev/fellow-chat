@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  app:
+    image: svalka.cr.cloud.ru/giga-fellow-chat:latest
+    container_name: giga-fellow-chat
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://db:27017/chat
+    depends_on:
+      - db
+
+  db:
+    image: mongo:latest
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: chat
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

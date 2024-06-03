@@ -1,3 +1,6 @@
 spring:
   application:
     name: fellow-gigachat
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI}

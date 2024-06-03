@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service
 import org.springframework.web.socket.WebSocketSession
 import ru.alaev.fellowgigachat.chat.processConnection.sendHistory.SendHistoryCommand
 import ru.alaev.fellowgigachat.chat.processConnection.sendHistory.SendHistoryCommandHandler
-import ru.alaev.fellowgigachat.domain.ChatMessage
 import ru.alaev.fellowgigachat.domain.UserId
 import java.util.concurrent.ConcurrentHashMap
 
@@ -18,7 +17,7 @@ class ConnectionProcessCommandHandler(
 
         log.info("New session established: ${command.userId.value}")
 
-        sendHistoryCommandHandler.handle(SendHistoryCommand(command.session, command.userId, command.chatHistory))
+        sendHistoryCommandHandler.handle(SendHistoryCommand(command.session, command.userId))
     }
 
     companion object {
@@ -30,5 +29,4 @@ data class ConnectionProcessCommand(
     val session: WebSocketSession,
     val userId: UserId,
     val sessions: ConcurrentHashMap<UserId, WebSocketSession>,
-    val chatHistory: ConcurrentHashMap<UserId, MutableList<ChatMessage>>
 )

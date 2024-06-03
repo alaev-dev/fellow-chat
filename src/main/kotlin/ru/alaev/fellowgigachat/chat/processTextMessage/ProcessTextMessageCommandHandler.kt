@@ -8,14 +8,13 @@ import org.springframework.web.socket.WebSocketSession
 import ru.alaev.fellowgigachat.chat.dto.ChatMessageRequest
 import ru.alaev.fellowgigachat.chat.dto.ChatMessageResponse
 import ru.alaev.fellowgigachat.chat.processTextMessage.saveHistory.SaveHistoryCommand
-import ru.alaev.fellowgigachat.chat.processTextMessage.saveHistory.SaveHistoryCommandHandler
-import ru.alaev.fellowgigachat.domain.ChatMessage
+import ru.alaev.fellowgigachat.chat.processTextMessage.saveHistory.SaveMessageCommandHandler
 import ru.alaev.fellowgigachat.domain.UserId
 import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class ProcessTextMessageCommandHandler(
-    private val saveHistoryCommandHandler: SaveHistoryCommandHandler,
+    private val saveMessageCommandHandler: SaveMessageCommandHandler,
     private val objectMapper: ObjectMapper,
 ) {
     fun handle(command: ProcessTextMessageCommand) {
@@ -34,7 +33,7 @@ class ProcessTextMessageCommandHandler(
 
         log.info("Message received: ${message.content} for ${message.to.value} from ${message.from.value}")
 
-        saveHistoryCommandHandler.handle(SaveHistoryCommand(message, command.chatHistory))
+        saveMessageCommandHandler.handle(SaveHistoryCommand(message))
     }
 
     companion object {
@@ -46,5 +45,4 @@ data class ProcessTextMessageCommand(
     val chatMessage: ChatMessageRequest,
     val from: UserId,
     val sessions: ConcurrentHashMap<UserId, WebSocketSession>,
-    val chatHistory: ConcurrentHashMap<UserId, MutableList<ChatMessage>>
 )
