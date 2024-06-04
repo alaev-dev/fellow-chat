@@ -1,8 +1,5 @@
 # Fellow-chat
 
-![Build Status](https://img.shields.io/travis/com/alaev-dev/fellow-chat.svg)
-![License](https://img.shields.io/github/license/alaev-dev/fellow-chat.svg)
-
 ![Fellow-chat Logo](images/logo.webp)
 
 ## Описание
