@@ -5,9 +5,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
-import ru.alaev.fellowgigachat.chat.dto.ChatMessageResponse
-import ru.alaev.fellowgigachat.chat.persistence.ChatStorage
-import ru.alaev.fellowgigachat.domain.UserId
+import ru.alaev.fellowgigachat.chat.dto.ResponseType.MESSAGE
+import ru.alaev.fellowgigachat.chat.dto.message.ChatMessageResponse
+import ru.alaev.fellowgigachat.chat.dto.toCommonResponse
+import ru.alaev.fellowgigachat.chat.persistence.chat.ChatStorage
+import ru.alaev.fellowgigachat.domain.Username
 
 @Service
 class SendHistoryCommandHandler(
@@ -16,13 +18,17 @@ class SendHistoryCommandHandler(
 ) {
     // Send chat history to the connected user
     fun handle(command: SendHistoryCommand) {
-        val userHistory = storage.getLatestMessages(command.userId)
+        val userHistory = storage.getLatestMessages(command.username)
 
         userHistory.forEach { message ->
-            command.session.sendMessage(TextMessage(ChatMessageResponse.from(message).toJson(objectMapper)))
+            command.session.sendMessage(
+                TextMessage(
+                    ChatMessageResponse.from(message).toCommonResponse(MESSAGE).toJson(objectMapper)
+                )
+            )
         }
 
-        log.info("Send history for: ${command.userId.value}, sends ${userHistory.count()} messages")
+        log.info("Send history for: ${command.username.value}, sends ${userHistory.count()} messages")
     }
 
     companion object {
@@ -32,5 +38,5 @@ class SendHistoryCommandHandler(
 
 data class SendHistoryCommand(
     val session: WebSocketSession,
-    val userId: UserId,
+    val username: Username,
 )

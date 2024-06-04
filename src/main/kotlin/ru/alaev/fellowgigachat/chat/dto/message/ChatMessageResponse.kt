@@ -1,6 +1,6 @@
-package ru.alaev.fellowgigachat.chat.dto
+package ru.alaev.fellowgigachat.chat.dto.message
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import ru.alaev.fellowgigachat.chat.dto.ConvertibleToCommonResponse
 import ru.alaev.fellowgigachat.domain.ChatMessage
 
 data class ChatMessageResponse(
@@ -9,10 +9,7 @@ data class ChatMessageResponse(
     val to: String,
     val message: String,
     val timestamp: String,
-) {
-    fun toJson(objectMapper: ObjectMapper): String {
-        return objectMapper.writeValueAsString(this)
-    }
+) : ConvertibleToCommonResponse {
 
     companion object {
         fun from(chatMessage: ChatMessage): ChatMessageResponse {

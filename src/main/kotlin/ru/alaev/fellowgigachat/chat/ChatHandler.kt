@@ -8,12 +8,12 @@ import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
-import ru.alaev.fellowgigachat.chat.dto.ChatMessageRequest
+import ru.alaev.fellowgigachat.chat.dto.message.ChatMessageRequest
 import ru.alaev.fellowgigachat.chat.processConnection.ConnectionProcessCommand
 import ru.alaev.fellowgigachat.chat.processConnection.ConnectionProcessCommandHandler
 import ru.alaev.fellowgigachat.chat.processTextMessage.ProcessTextMessageCommand
 import ru.alaev.fellowgigachat.chat.processTextMessage.ProcessTextMessageCommandHandler
-import ru.alaev.fellowgigachat.domain.UserId
+import ru.alaev.fellowgigachat.domain.Username
 import java.util.concurrent.ConcurrentHashMap
 
 @Component
@@ -22,7 +22,7 @@ class ChatHandler(
     private val processTextMessageCommandHandler: ProcessTextMessageCommandHandler,
     private val objectMapper: ObjectMapper,
 ) : TextWebSocketHandler() {
-    private val sessions = ConcurrentHashMap<UserId, WebSocketSession>()
+    val sessions = ConcurrentHashMap<Username, WebSocketSession>()
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
         val userId = getUserId(session)
@@ -43,8 +43,8 @@ class ChatHandler(
         log.info("Session closed for: ${userId.value} with status :: ${status.reason} and code :: ${status.code}")
     }
 
-    private fun getUserId(session: WebSocketSession): UserId {
-        return UserId(session.uri?.query?.split("=")?.get(1) ?: session.id)
+    private fun getUserId(session: WebSocketSession): Username {
+        return Username(session.uri?.query?.split("=")?.get(1) ?: session.id)
     }
 
 

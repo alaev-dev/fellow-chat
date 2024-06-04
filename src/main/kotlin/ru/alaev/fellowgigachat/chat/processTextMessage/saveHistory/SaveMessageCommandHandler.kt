@@ -2,7 +2,7 @@ package ru.alaev.fellowgigachat.chat.processTextMessage.saveHistory
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import ru.alaev.fellowgigachat.chat.persistence.ChatStorage
+import ru.alaev.fellowgigachat.chat.persistence.chat.ChatStorage
 import ru.alaev.fellowgigachat.domain.ChatMessage
 
 @Service

@@ -1,16 +1,16 @@
-package ru.alaev.fellowgigachat.chat.dto
+package ru.alaev.fellowgigachat.chat.dto.message
 
 import ru.alaev.fellowgigachat.domain.ChatMessage
-import ru.alaev.fellowgigachat.domain.UserId
+import ru.alaev.fellowgigachat.domain.Username
 
 data class ChatMessageRequest(
     var to: String,
     var message: String,
 ) {
-    fun toDomain(from: UserId): ChatMessage {
+    fun toDomain(from: Username): ChatMessage {
         return ChatMessage(
             from = from,
-            to = UserId(to),
+            to = Username(to),
             message = message,
         )
     }
