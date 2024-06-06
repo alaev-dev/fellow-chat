@@ -1,4 +1,4 @@
-package ru.alaev.fellowgigachat.chat.changeStatus.handler
+package ru.alaev.fellowgigachat.user.changeStatus.handler
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service

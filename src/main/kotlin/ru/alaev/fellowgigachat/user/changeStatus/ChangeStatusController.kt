@@ -1,11 +1,11 @@
-package ru.alaev.fellowgigachat.chat.changeStatus
+package ru.alaev.fellowgigachat.user.changeStatus
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import ru.alaev.fellowgigachat.chat.changeStatus.handler.ChangeStatusCommand
-import ru.alaev.fellowgigachat.chat.changeStatus.handler.ChangeStatusCommandHandler
+import ru.alaev.fellowgigachat.user.changeStatus.handler.ChangeStatusCommand
+import ru.alaev.fellowgigachat.user.changeStatus.handler.ChangeStatusCommandHandler
 
 @RestController
 class ChangeStatusController(
