@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 import ru.alaev.fellowgigachat.chat.persistence.users.UserStorage
 import ru.alaev.fellowgigachat.chat.persistence.users.mongo.model.UserEntity
 import ru.alaev.fellowgigachat.config.DomainException
+import ru.alaev.fellowgigachat.config.ErrorType.NOT_FOUND
 import ru.alaev.fellowgigachat.domain.Username
 
 @RestController
@@ -19,7 +20,7 @@ class UserController(
         log.info("Requesting user info for :: $username")
         return UserResponse.from(
             userStorage.getUser(Username(username))
-                ?: throw DomainException("User not found")
+                ?: throw DomainException("User not found", NOT_FOUND)
         )
     }
 

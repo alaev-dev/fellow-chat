@@ -12,18 +12,16 @@ class GlobalExceptionHandler {
     @ExceptionHandler(DomainException::class)
     fun handleDomainException(ex: DomainException, request: WebRequest): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse(
-            status = HttpStatus.BAD_REQUEST.value(),
             message = ex.message ?: "Invalid domain data",
             path = request.getDescription(false)
         )
-        return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
+        return ResponseEntity(errorResponse, ex.errorType.httpStatus)
     }
 
     // Обработка других исключений
     @ExceptionHandler(Exception::class)
     fun handleGenericException(ex: Exception, request: WebRequest): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse(
-            status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
             message = ex.message ?: "An unexpected error occurred",
             path = request.getDescription(false)
         )
@@ -31,10 +29,14 @@ class GlobalExceptionHandler {
     }
 }
 
-class DomainException(message: String) : RuntimeException(message)
+class DomainException(message: String, val errorType: ErrorType) : RuntimeException(message)
 
 data class ErrorResponse(
-    val status: Int,
     val message: String,
     val path: String
 )
+
+enum class ErrorType(val httpStatus: HttpStatus) {
+    NOT_FOUND(HttpStatus.NOT_FOUND),
+    VALIDATION_ERROR(HttpStatus.BAD_REQUEST)
+}

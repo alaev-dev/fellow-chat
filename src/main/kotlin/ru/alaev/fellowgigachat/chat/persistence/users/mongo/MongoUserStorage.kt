@@ -6,6 +6,7 @@ import ru.alaev.fellowgigachat.chat.persistence.users.UserStorage
 import ru.alaev.fellowgigachat.chat.persistence.users.mongo.model.UserEntity
 import ru.alaev.fellowgigachat.chat.persistence.users.mongo.repo.UserRepo
 import ru.alaev.fellowgigachat.config.DomainException
+import ru.alaev.fellowgigachat.config.ErrorType.NOT_FOUND
 import ru.alaev.fellowgigachat.domain.User
 import ru.alaev.fellowgigachat.domain.Username
 import java.util.*
@@ -33,7 +34,8 @@ class MongoUserStorage(
     }
 
     override fun changeStatus(username: Username, newStatus: String) {
-        val user = userRepo.findByUsername(username.value) ?: throw DomainException("user $username not found")
+        val user = userRepo.findByUsername(username.value)
+            ?: throw DomainException("user $username not found", NOT_FOUND)
 
         log.info("Changing status of user ${user.username} from ${user.status} to $newStatus")
 
