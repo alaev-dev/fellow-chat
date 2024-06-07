@@ -23,8 +23,7 @@ Fellow-chat - это бэкенд для чата, реализованный с
     ```bash
    gradle build # Важно выполнить этот шаг для уменьшения итогового размера Docker-образа.
    docker build -t svalka.cr.cloud.ru/giga-fellow-chat:latest . # Сборка Docker-образа:
-   docker-compose up # Запуск с помощью Docker Compose:
-   docker-compose up -d # Можно добавить флаг `-d` для запуска в фоновом режиме:
+   docker-compose up # Запуск с помощью Docker Compose (можно добавить флаг `-d` для запуска в фоновом режиме)
 
 ## Авторы
 
