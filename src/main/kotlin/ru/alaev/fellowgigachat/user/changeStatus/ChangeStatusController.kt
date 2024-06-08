@@ -1,9 +1,11 @@
 package ru.alaev.fellowgigachat.user.changeStatus
 
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import ru.alaev.fellowgigachat.domain.Status
+import ru.alaev.fellowgigachat.domain.Username
 import ru.alaev.fellowgigachat.user.changeStatus.handler.ChangeStatusCommand
 import ru.alaev.fellowgigachat.user.changeStatus.handler.ChangeStatusCommandHandler
 
@@ -12,15 +14,20 @@ class ChangeStatusController(
     private val changeStatusCommandHandler: ChangeStatusCommandHandler,
 ) {
 
-    @PostMapping("/changeStatus")
+    @PatchMapping("/users/status")
     fun changeStatus(@RequestBody request: ChangeStatusRequest): ResponseEntity<Unit> {
-        changeStatusCommandHandler.handle(ChangeStatusCommand(request.userId, request.status))
+        changeStatusCommandHandler.handle(
+            ChangeStatusCommand(
+                username = Username(request.username),
+                status = Status(request.status)
+            )
+        )
 
         return ResponseEntity.ok().build()
     }
 }
 
 data class ChangeStatusRequest(
-    val userId: String,
+    val username: String,
     val status: String,
 )

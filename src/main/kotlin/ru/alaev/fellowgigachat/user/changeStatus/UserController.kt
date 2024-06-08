@@ -15,7 +15,7 @@ class UserController(
     private val userStorage: UserStorage
 ) {
 
-    @GetMapping("/user/{username}")
+    @GetMapping("/users/{username}")
     fun getUser(@PathVariable username: String): UserResponse {
         log.info("Requesting user info for :: $username")
         return UserResponse.from(
