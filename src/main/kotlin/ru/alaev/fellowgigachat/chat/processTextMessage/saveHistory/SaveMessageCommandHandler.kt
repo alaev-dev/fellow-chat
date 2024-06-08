@@ -12,7 +12,7 @@ class SaveMessageCommandHandler(
     fun handle(command: SaveHistoryCommand) {
         storage.saveMessage(command.content)
 
-        log.info("Save message for: ${command.content.from.value}")
+        log.info("Save message for: ${command.content.sender.value}")
     }
 
     companion object {

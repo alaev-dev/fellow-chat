@@ -13,37 +13,37 @@ import ru.alaev.fellowgigachat.chat.processConnection.ConnectionProcessCommand
 import ru.alaev.fellowgigachat.chat.processConnection.ConnectionProcessCommandHandler
 import ru.alaev.fellowgigachat.chat.processTextMessage.ProcessTextMessageCommand
 import ru.alaev.fellowgigachat.chat.processTextMessage.ProcessTextMessageCommandHandler
+import ru.alaev.fellowgigachat.chat.sessionManager.SessionManager
 import ru.alaev.fellowgigachat.domain.Username
-import java.util.concurrent.ConcurrentHashMap
 
 @Component
 class ChatHandler(
     private val connectionProcess: ConnectionProcessCommandHandler,
     private val processTextMessageCommandHandler: ProcessTextMessageCommandHandler,
     private val objectMapper: ObjectMapper,
+    private val sessionManager: SessionManager,
 ) : TextWebSocketHandler() {
-    val sessions = ConcurrentHashMap<Username, WebSocketSession>()
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
-        val userId = getUserId(session)
+        val userId = getUsername(session)
 
-        connectionProcess.handle(ConnectionProcessCommand(session, userId, sessions))
+        connectionProcess.handle(ConnectionProcessCommand(session, userId))
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
-        val userId = getUserId(session)
+        val username = getUsername(session)
         val chatMessage: ChatMessageRequest = objectMapper.readValue(message.payload)
 
-        processTextMessageCommandHandler.handle(ProcessTextMessageCommand(chatMessage, userId, sessions))
+        processTextMessageCommandHandler.handle(ProcessTextMessageCommand(chatMessage, username))
     }
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
-        val userId = getUserId(session)
-        sessions.remove(userId)
-        log.info("Session closed for: ${userId.value} with status :: ${status.reason} and code :: ${status.code}")
+        val username = getUsername(session)
+        sessionManager.removeConnection(username)
+        log.info("Session closed for: ${username.value} with status :: ${status.reason} and code :: ${status.code}")
     }
 
-    private fun getUserId(session: WebSocketSession): Username {
+    private fun getUsername(session: WebSocketSession): Username {
         return Username(session.uri?.query?.split("=")?.get(1) ?: session.id)
     }
 

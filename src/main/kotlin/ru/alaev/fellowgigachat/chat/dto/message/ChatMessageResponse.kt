@@ -15,8 +15,8 @@ data class ChatMessageResponse(
         fun from(chatMessage: ChatMessage): ChatMessageResponse {
             return ChatMessageResponse(
                 id = chatMessage.id.toString(),
-                from = chatMessage.from.value,
-                to = chatMessage.to.value,
+                from = chatMessage.sender.value,
+                to = chatMessage.recipient.value,
                 message = chatMessage.content,
                 timestamp = chatMessage.timestamp.toString(),
             )

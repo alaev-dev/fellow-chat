@@ -5,15 +5,15 @@ import java.util.*
 
 data class ChatMessage(
     val id: UUID,
-    val from: Username,
-    val to: Username,
+    val sender: Username,
+    val recipient: Username,
     val content: String,
     val timestamp: LocalDateTime,
 ) {
     constructor(from: Username, to: Username, message: String) : this(
         id = UUID.randomUUID(),
-        from = from,
-        to = to,
+        sender = from,
+        recipient = to,
         content = message,
         timestamp = LocalDateTime.now(),
     )

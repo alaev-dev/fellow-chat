@@ -15,8 +15,8 @@ class MongoChatStorage(
     private val userStorage: UserStorage,
 ) : ChatStorage {
     override fun saveMessage(chatMessage: ChatMessage) {
-        val fromUser = userStorage.getUser(chatMessage.from) ?: userStorage.createEmptyUser(chatMessage.from)
-        val toUser = userStorage.getUser(chatMessage.to) ?: userStorage.createEmptyUser(chatMessage.to)
+        val fromUser = userStorage.getUser(chatMessage.sender) ?: userStorage.createEmptyUser(chatMessage.sender)
+        val toUser = userStorage.getUser(chatMessage.recipient) ?: userStorage.createEmptyUser(chatMessage.recipient)
 
         val entity = ChatMessageEntity(
             id = UUID.randomUUID(),
@@ -35,8 +35,8 @@ class MongoChatStorage(
             .map { entity ->
                 ChatMessage(
                     id = entity.id,
-                    from = Username(entity.fromUser.username),
-                    to = Username(entity.toUser.username),
+                    sender = Username(entity.fromUser.username),
+                    recipient = Username(entity.toUser.username),
                     content = entity.content,
                     timestamp = entity.timestamp
                 )
