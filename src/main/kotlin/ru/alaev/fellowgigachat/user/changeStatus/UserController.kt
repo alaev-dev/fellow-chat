@@ -9,10 +9,14 @@ import ru.alaev.fellowgigachat.chat.persistence.users.mongo.model.UserEntity
 import ru.alaev.fellowgigachat.config.DomainException
 import ru.alaev.fellowgigachat.config.ErrorType.NOT_FOUND
 import ru.alaev.fellowgigachat.domain.Username
+import ru.alaev.fellowgigachat.user.changeStatus.handler.UserActivityQuery
+import ru.alaev.fellowgigachat.user.changeStatus.handler.UserActivityQueryHandler
+import java.time.LocalDateTime
 
 @RestController
 class UserController(
-    private val userStorage: UserStorage
+    private val userStorage: UserStorage,
+    private val userActivityHandler: UserActivityQueryHandler
 ) {
 
     @GetMapping("/users/{username}")
@@ -22,6 +26,12 @@ class UserController(
             userStorage.getUser(Username(username))
                 ?: throw DomainException("User not found", NOT_FOUND)
         )
+    }
+
+    @GetMapping("/users/{username}/activity")
+    fun getUserActivity(@PathVariable username: String): UserActivityResponse {
+        val result = userActivityHandler.handle(UserActivityQuery(Username(username)))
+
     }
 
     companion object {
@@ -44,3 +54,15 @@ data class UserResponse(
         }
     }
 }
+
+data class UserActivityResponse(
+    val userStatus: String,
+    val lastMessages: List<LastChatMessageResponse>,
+)
+
+data class LastChatMessageResponse(
+    val id: String,
+    val friendUsername: String,
+    val message: String,
+    val timestamp: LocalDateTime,
+)

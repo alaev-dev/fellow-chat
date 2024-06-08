@@ -22,7 +22,7 @@ class MongoUserStorage(
     }
 
     override fun getUser(username: Username): UserEntity? {
-        return userRepo.findByUsername(username.value)
+        return userRepo.findByUsername(username)
     }
 
     override fun createEmptyUser(username: Username): UserEntity {
@@ -35,7 +35,7 @@ class MongoUserStorage(
     }
 
     override fun changeStatus(username: Username, newStatus: Status) {
-        val user = userRepo.findByUsername(username.value)
+        val user = userRepo.findByUsername(username)
             ?: throw DomainException("user $username not found", NOT_FOUND)
 
         log.info("Changing status of user ${user.username} from ${user.status} to $newStatus")
@@ -43,7 +43,7 @@ class MongoUserStorage(
         user.status = newStatus.value
         userRepo.save(user)
 
-        val updatedUser = userRepo.findByUsername(username.value)
+        val updatedUser = userRepo.findByUsername(username)
         log.info("Updated status of user ${updatedUser?.username} is ${updatedUser?.status}")
     }
 
