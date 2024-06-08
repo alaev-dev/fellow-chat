@@ -3,8 +3,8 @@ package ru.alaev.fellowgigachat.chat.processTextMessage
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.alaev.fellowgigachat.chat.dto.ResponseType.MESSAGE
-import ru.alaev.fellowgigachat.chat.dto.message.ChatMessageRequest
 import ru.alaev.fellowgigachat.chat.dto.message.ChatMessageResponse
+import ru.alaev.fellowgigachat.chat.dto.message.WebsocketChatMessageRequest
 import ru.alaev.fellowgigachat.chat.dto.toCommonResponse
 import ru.alaev.fellowgigachat.chat.processTextMessage.saveHistory.SaveHistoryCommand
 import ru.alaev.fellowgigachat.chat.processTextMessage.saveHistory.SaveMessageCommandHandler
@@ -37,6 +37,6 @@ class ProcessTextMessageCommandHandler(
 }
 
 data class ProcessTextMessageCommand(
-    val chatMessage: ChatMessageRequest,
+    val chatMessage: WebsocketChatMessageRequest,
     val from: Username,
 )

@@ -16,9 +16,12 @@ interface ChatMessageRepository : MongoRepository<ChatMessageEntity, UUID> {
             "{ \$lookup: { from: 'users', localField: 'to', foreignField: '_id', as: 'toUser' } }",
             "{ \$unwind: '\$fromUser' }",
             "{ \$unwind: '\$toUser' }",
-            "{ \$limit: 50 }",
+            // Add a skip stage to handle pagination
+            "{ \$skip: ?1 }",
+            // Add a limit stage to limit the number of results per page
+            "{ \$limit: ?2 }",
             "{ \$sort: { 'timestamp': -1 } }"
         ]
     )
-    fun findLatestMessagesWithUserDetails(userId: UUID): List<ChatMessageEntityWithUserDetails>
+    fun findLatestMessagesWithUserDetails(userId: UUID, skip: Int, limit: Int): List<ChatMessageEntityWithUserDetails>
 }

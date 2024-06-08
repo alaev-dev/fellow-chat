@@ -18,6 +18,10 @@ class WebSocketSessionManager(
         sessions[username]?.sendMessage(TextMessage(message.toJson(objectMapper)))
     }
 
+    override fun sendBroadcastMessage(message: CommonResponse<*>) {
+        sessions.forEach { it.value.sendMessage(TextMessage(message.toJson(objectMapper))) }
+    }
+
     override fun connectUser(session: WebSocketSession, username: Username) {
         sessions[username] = session
     }

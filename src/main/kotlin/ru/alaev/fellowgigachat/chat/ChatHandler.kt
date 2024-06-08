@@ -8,7 +8,7 @@ import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
-import ru.alaev.fellowgigachat.chat.dto.message.ChatMessageRequest
+import ru.alaev.fellowgigachat.chat.dto.message.WebsocketChatMessageRequest
 import ru.alaev.fellowgigachat.chat.processConnection.ConnectionProcessCommand
 import ru.alaev.fellowgigachat.chat.processConnection.ConnectionProcessCommandHandler
 import ru.alaev.fellowgigachat.chat.processTextMessage.ProcessTextMessageCommand
@@ -32,7 +32,7 @@ class ChatHandler(
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         val username = getUsername(session)
-        val chatMessage: ChatMessageRequest = objectMapper.readValue(message.payload)
+        val chatMessage: WebsocketChatMessageRequest = objectMapper.readValue(message.payload)
 
         processTextMessageCommandHandler.handle(ProcessTextMessageCommand(chatMessage, username))
     }

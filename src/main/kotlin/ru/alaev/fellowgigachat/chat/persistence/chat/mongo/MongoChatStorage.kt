@@ -1,5 +1,6 @@
 package ru.alaev.fellowgigachat.chat.persistence.chat.mongo
 
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import ru.alaev.fellowgigachat.chat.persistence.chat.ChatStorage
 import ru.alaev.fellowgigachat.chat.persistence.chat.mongo.model.ChatMessageEntity
@@ -28,10 +29,13 @@ class MongoChatStorage(
         messageRepository.save(entity)
     }
 
-    override fun getLatestMessages(username: Username): List<ChatMessage> {
+    override fun getMessagesPageable(username: Username, page: Pageable): List<ChatMessage> {
         val user = userStorage.getUser(username) ?: return emptyList()
 
-        return messageRepository.findLatestMessagesWithUserDetails(user.id)
+        val skip = page.pageNumber * page.pageSize
+        val limit = page.pageSize
+
+        return messageRepository.findLatestMessagesWithUserDetails(user.id, skip, limit)
             .map { entity ->
                 ChatMessage(
                     id = entity.id,

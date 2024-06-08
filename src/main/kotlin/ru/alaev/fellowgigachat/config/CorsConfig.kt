@@ -11,7 +11,6 @@ class MyWebConfig : WebMvcConfigurer {
             .allowedOrigins("*")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
             .allowedHeaders("*")
-            .allowCredentials(true)
             .maxAge(3600)
     }
 }
