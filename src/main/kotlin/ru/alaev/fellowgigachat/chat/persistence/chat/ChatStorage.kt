@@ -6,5 +6,10 @@ import ru.alaev.fellowgigachat.domain.Username
 
 interface ChatStorage {
     fun saveMessage(chatMessage: ChatMessage)
-    fun getMessagesPageable(username: Username, page: Pageable): List<ChatMessage>
+    fun getMessagesPageable(username: Username, page: Pageable): CollectPageableHistoryQueryResult
 }
+
+data class CollectPageableHistoryQueryResult(
+    val pages: List<ChatMessage>,
+    val total: Long,
+)

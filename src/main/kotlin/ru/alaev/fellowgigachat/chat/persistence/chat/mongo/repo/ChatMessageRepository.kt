@@ -2,6 +2,7 @@ package ru.alaev.fellowgigachat.chat.persistence.chat.mongo.repo
 
 import org.springframework.data.mongodb.repository.Aggregation
 import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.mongodb.repository.Query
 import org.springframework.stereotype.Repository
 import ru.alaev.fellowgigachat.chat.persistence.chat.mongo.model.ChatMessageEntity
 import java.util.*
@@ -24,4 +25,7 @@ interface ChatMessageRepository : MongoRepository<ChatMessageEntity, UUID> {
         ]
     )
     fun findLatestMessagesWithUserDetails(userId: UUID, skip: Int, limit: Int): List<ChatMessageEntityWithUserDetails>
+
+    @Query("{ \$or: [ { 'to': ?0 }, { 'from': ?0 } ] }")
+    fun countTotalMessagesForUser(userId: UUID): Long
 }

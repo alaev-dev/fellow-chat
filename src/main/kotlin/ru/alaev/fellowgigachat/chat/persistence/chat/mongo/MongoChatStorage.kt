@@ -3,6 +3,7 @@ package ru.alaev.fellowgigachat.chat.persistence.chat.mongo
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import ru.alaev.fellowgigachat.chat.persistence.chat.ChatStorage
+import ru.alaev.fellowgigachat.chat.persistence.chat.CollectPageableHistoryQueryResult
 import ru.alaev.fellowgigachat.chat.persistence.chat.mongo.model.ChatMessageEntity
 import ru.alaev.fellowgigachat.chat.persistence.chat.mongo.repo.ChatMessageRepository
 import ru.alaev.fellowgigachat.chat.persistence.users.UserStorage
@@ -29,13 +30,16 @@ class MongoChatStorage(
         messageRepository.save(entity)
     }
 
-    override fun getMessagesPageable(username: Username, page: Pageable): List<ChatMessage> {
-        val user = userStorage.getUser(username) ?: return emptyList()
+    override fun getMessagesPageable(username: Username, page: Pageable): CollectPageableHistoryQueryResult {
+        val user = userStorage.getUser(username) ?: return CollectPageableHistoryQueryResult(
+            pages = emptyList(),
+            total = 0,
+        )
 
         val skip = page.pageNumber * page.pageSize
         val limit = page.pageSize
 
-        return messageRepository.findLatestMessagesWithUserDetails(user.id, skip, limit)
+        val messages = messageRepository.findLatestMessagesWithUserDetails(user.id, skip, limit)
             .map { entity ->
                 ChatMessage(
                     id = entity.id,
@@ -45,5 +49,12 @@ class MongoChatStorage(
                     timestamp = entity.timestamp
                 )
             }
+
+        val totalMessages = messageRepository.countTotalMessagesForUser(user.id)
+
+        return CollectPageableHistoryQueryResult(
+            pages = messages,
+            total = totalMessages
+        )
     }
 }

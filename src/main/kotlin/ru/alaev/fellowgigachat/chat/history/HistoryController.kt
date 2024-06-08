@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import ru.alaev.fellowgigachat.chat.dto.CommonResponse
+import ru.alaev.fellowgigachat.chat.dto.ConvertibleToCommonResponse
 import ru.alaev.fellowgigachat.chat.dto.ResponseType.HISTORY
 import ru.alaev.fellowgigachat.chat.dto.message.ChatMessageResponse
 import ru.alaev.fellowgigachat.chat.dto.toCommonResponse
@@ -21,12 +22,22 @@ class HistoryController(
         @PathVariable username: String,
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int
-    ): CommonResponse<List<ChatMessageResponse>> {
-        return historyQuery.handler(
+    ): CommonResponse<PageableHistoryResponse> {
+        val result = historyQuery.handler(
             CollectPageableHistoryQuery(
                 username = Username(username),
                 page = PageRequest.of(pageNumber, pageSize)
             )
-        ).map { ChatMessageResponse.from(it) }.toCommonResponse(HISTORY)
+        )
+
+        return PageableHistoryResponse(
+            pages = result.pages.map { ChatMessageResponse.from(it) },
+            total = result.total
+        ).toCommonResponse(HISTORY)
     }
 }
+
+data class PageableHistoryResponse(
+    val pages: List<ChatMessageResponse>,
+    val total: Long,
+) : ConvertibleToCommonResponse
