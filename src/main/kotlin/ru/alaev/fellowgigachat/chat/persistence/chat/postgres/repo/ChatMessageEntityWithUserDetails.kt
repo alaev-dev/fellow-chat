@@ -1,8 +1,8 @@
-package ru.alaev.fellowgigachat.chat.persistence.chat.mongo.repo
+package ru.alaev.fellowgigachat.chat.persistence.chat.postgres.repo
 
-import ru.alaev.fellowgigachat.chat.persistence.users.mongo.model.UserEntity
 import java.time.LocalDateTime
 import java.util.*
+import ru.alaev.fellowgigachat.chat.persistence.user.postgres.model.UserEntity
 
 data class ChatMessageEntityWithUserDetails(
     val id: UUID,

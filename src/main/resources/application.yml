@@ -1,6 +1,14 @@
 spring:
   application:
     name: fellow-gigachat
-  data:
-    mongodb:
-      uri: ${SPRING_DATA_MONGODB_URI}
+  datasource:
+    url: jdbc:postgresql://${SPRING_DATASOURCE_URL:localhost:5432/chat}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:

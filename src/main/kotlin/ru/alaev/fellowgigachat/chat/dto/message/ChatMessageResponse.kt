@@ -23,7 +23,7 @@ data class ChatMessageResponse(
             return ChatMessageResponse(
                 id = chatMessage.id.toString(),
                 from = chatMessage.sender.value,
-                to = chatMessage.recipient.value,
+                to = chatMessage.group.name.value,
                 message = chatMessage.content,
                 timestamp = chatMessage.timestamp.toString(),
             )

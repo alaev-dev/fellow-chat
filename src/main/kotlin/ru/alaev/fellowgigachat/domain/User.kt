@@ -3,6 +3,7 @@ package ru.alaev.fellowgigachat.domain
 data class User(
     val username: Username,
     val status: Status,
+    val groups: List<GroupName>,
 )
 
 @JvmInline

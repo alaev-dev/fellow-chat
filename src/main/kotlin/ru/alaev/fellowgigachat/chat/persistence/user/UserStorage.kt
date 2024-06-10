@@ -1,6 +1,6 @@
-package ru.alaev.fellowgigachat.chat.persistence.users
+package ru.alaev.fellowgigachat.chat.persistence.user
 
-import ru.alaev.fellowgigachat.chat.persistence.users.mongo.model.UserEntity
+import ru.alaev.fellowgigachat.chat.persistence.user.postgres.model.UserEntity
 import ru.alaev.fellowgigachat.domain.Status
 import ru.alaev.fellowgigachat.domain.User
 import ru.alaev.fellowgigachat.domain.Username

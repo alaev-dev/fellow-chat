@@ -2,7 +2,7 @@ package ru.alaev.fellowgigachat.user.changeStatus.handler
 
 import org.springframework.stereotype.Service
 import ru.alaev.fellowgigachat.chat.notify.NotificationService
-import ru.alaev.fellowgigachat.chat.persistence.users.UserStorage
+import ru.alaev.fellowgigachat.chat.persistence.user.UserStorage
 import ru.alaev.fellowgigachat.domain.Status
 import ru.alaev.fellowgigachat.domain.User
 import ru.alaev.fellowgigachat.domain.Username
@@ -26,6 +26,7 @@ class ChangeStatusCommandHandler(
         val newUser = User(
             username = command.username,
             status = command.status,
+            groups = emptyList(),
         )
         userStorage.createUser(newUser)
         return newUser

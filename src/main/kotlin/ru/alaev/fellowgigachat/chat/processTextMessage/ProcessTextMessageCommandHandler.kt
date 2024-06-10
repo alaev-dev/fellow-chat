@@ -18,17 +18,17 @@ class ProcessTextMessageCommandHandler(
 ) {
     fun handle(command: ProcessTextMessageCommand) {
         val message = command.chatMessage.toDomain(command.from)
-        val response = ChatMessageResponse.from(message).toCommonResponse(MESSAGE)
-
-        sessionManager.sendMessageToSession(message.recipient, response)
-
-        if (message.recipient != message.sender) {
-            sessionManager.sendMessageToSession(message.sender, response)
-        }
-
-        log.info("Message received: ${message.content} for ${message.recipient.value} from ${message.sender.value}")
 
         saveMessageCommandHandler.handle(SaveHistoryCommand(message))
+
+        message.group.members.toSet().forEach {
+            sessionManager.sendMessageToSession(
+                username = it,
+                message = ChatMessageResponse.from(message).toCommonResponse(MESSAGE)
+            )
+        }
+
+        log.info("Message received: ${message.content} for ${message.group} from ${message.sender}")
     }
 
     companion object {

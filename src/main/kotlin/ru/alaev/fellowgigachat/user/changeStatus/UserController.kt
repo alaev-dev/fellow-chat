@@ -4,8 +4,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
-import ru.alaev.fellowgigachat.chat.persistence.users.UserStorage
-import ru.alaev.fellowgigachat.chat.persistence.users.mongo.model.UserEntity
+import ru.alaev.fellowgigachat.chat.persistence.user.UserStorage
+import ru.alaev.fellowgigachat.chat.persistence.user.postgres.model.UserEntity
 import ru.alaev.fellowgigachat.config.DomainException
 import ru.alaev.fellowgigachat.config.ErrorType.NOT_FOUND
 import ru.alaev.fellowgigachat.domain.Username

@@ -1,19 +1,18 @@
-package ru.alaev.fellowgigachat.chat.persistence.users.mongo
+package ru.alaev.fellowgigachat.chat.persistence.user.postgres
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import ru.alaev.fellowgigachat.chat.persistence.users.UserStorage
-import ru.alaev.fellowgigachat.chat.persistence.users.mongo.model.UserEntity
-import ru.alaev.fellowgigachat.chat.persistence.users.mongo.repo.UserRepo
+import ru.alaev.fellowgigachat.chat.persistence.user.UserStorage
+import ru.alaev.fellowgigachat.chat.persistence.user.postgres.model.UserEntity
+import ru.alaev.fellowgigachat.chat.persistence.user.postgres.repo.UserRepo
 import ru.alaev.fellowgigachat.config.DomainException
 import ru.alaev.fellowgigachat.config.ErrorType.NOT_FOUND
 import ru.alaev.fellowgigachat.domain.Status
 import ru.alaev.fellowgigachat.domain.User
 import ru.alaev.fellowgigachat.domain.Username
-import java.util.*
 
 @Service
-class MongoUserStorage(
+class PostgresUserStorage(
     private val userRepo: UserRepo
 ) : UserStorage {
     override fun createUser(user: User) {
@@ -27,9 +26,9 @@ class MongoUserStorage(
 
     override fun createEmptyUser(username: Username): UserEntity {
         val user = UserEntity(
-            id = UUID.randomUUID(),
+            id = -1,
             username = username.value,
-            status = "NEW"
+            status = "NEW",
         )
         return userRepo.save(user)
     }
