@@ -7,11 +7,11 @@ import ru.alaev.fellowgigachat.domain.ChatMessage
 @Schema(description = "Response message for chat communication")
 data class ChatMessageResponse(
     @Schema(description = "Message ID")
-    val id: String,
+    val id: Long,
     @Schema(description = "Sender username")
     val from: String,
-    @Schema(description = "Recipient username")
-    val to: String,
+    @Schema(description = "Group id")
+    val to: Long,
     @Schema(description = "Message content")
     val message: String,
     @Schema(description = "Timestamp of the message")
@@ -21,9 +21,9 @@ data class ChatMessageResponse(
     companion object {
         fun from(chatMessage: ChatMessage): ChatMessageResponse {
             return ChatMessageResponse(
-                id = chatMessage.id.toString(),
+                id = chatMessage.id,
                 from = chatMessage.sender.value,
-                to = chatMessage.group.name.value,
+                to = chatMessage.group.id.value,
                 message = chatMessage.content,
                 timestamp = chatMessage.timestamp.toString(),
             )
