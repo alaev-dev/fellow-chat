@@ -2,11 +2,11 @@ package ru.alaev.fellowgigachat.chat.persistence.chat
 
 import org.springframework.data.domain.Pageable
 import ru.alaev.fellowgigachat.domain.ChatMessage
-import ru.alaev.fellowgigachat.domain.GroupName
+import ru.alaev.fellowgigachat.domain.GroupId
 
 interface ChatStorage {
     fun saveMessage(chatMessage: ChatMessage): ChatMessage
-    fun getMessagesPageable(groupName: GroupName, page: Pageable): CollectPageableHistoryQueryResult
+    fun getMessagesPageable(groupId: GroupId, page: Pageable): CollectPageableHistoryQueryResult
 }
 
 data class CollectPageableHistoryQueryResult(

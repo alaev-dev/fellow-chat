@@ -13,7 +13,7 @@ import ru.alaev.fellowgigachat.chat.persistence.user.UserStorage
 import ru.alaev.fellowgigachat.config.DomainException
 import ru.alaev.fellowgigachat.config.ErrorType.NOT_FOUND
 import ru.alaev.fellowgigachat.domain.ChatMessage
-import ru.alaev.fellowgigachat.domain.GroupName
+import ru.alaev.fellowgigachat.domain.GroupId
 import ru.alaev.fellowgigachat.domain.Username
 
 @Service
@@ -51,19 +51,19 @@ class PostgresChatStorage(
         return savedMessage
     }
 
-    override fun getMessagesPageable(groupName: GroupName, page: Pageable): CollectPageableHistoryQueryResult {
-        logger.info("Retrieving pageable messages for group $groupName")
+    override fun getMessagesPageable(groupId: GroupId, page: Pageable): CollectPageableHistoryQueryResult {
+        logger.info("Retrieving pageable messages for group ${groupId.value}")
 
-        val group = groupStorage.get(groupName)
+        val group = groupStorage.getById(groupId)
         if (group == null) {
-            logger.warn("Group $groupName not found")
+            logger.warn("Group ${groupId.value} not found")
             return CollectPageableHistoryQueryResult(
                 pages = emptyList(),
                 total = 0,
             )
         }
 
-        val messages = messageRepository.findLatestMessages(groupName, page)
+        val messages = messageRepository.findLatestMessages(groupId, page)
             .map { entity ->
                 ChatMessage(
                     id = entity.id,
@@ -74,9 +74,9 @@ class PostgresChatStorage(
                 )
             }
 
-        val totalMessages = messageRepository.countTotalMessagesForGroup(groupName)
+        val totalMessages = messageRepository.countTotalMessagesForGroup(groupId)
 
-        logger.info("Found ${messages.size} messages for group $groupName, total messages: $totalMessages")
+        logger.info("Found ${messages.size} messages for group ${groupId.value}, total messages: $totalMessages")
 
         return CollectPageableHistoryQueryResult(
             pages = messages,

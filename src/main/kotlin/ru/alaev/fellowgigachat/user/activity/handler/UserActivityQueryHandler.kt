@@ -9,6 +9,7 @@ import ru.alaev.fellowgigachat.chat.persistence.user.UserStorage
 import ru.alaev.fellowgigachat.config.DomainException
 import ru.alaev.fellowgigachat.config.ErrorType.NOT_FOUND
 import ru.alaev.fellowgigachat.domain.ChatMessage
+import ru.alaev.fellowgigachat.domain.GroupId
 import ru.alaev.fellowgigachat.domain.GroupName
 import ru.alaev.fellowgigachat.domain.Status
 import ru.alaev.fellowgigachat.domain.Username
@@ -28,7 +29,7 @@ class UserActivityQueryHandler(
             userStatus = Status(user.status),
             lastMessages = user.groups.mapNotNull { groupEntity ->
                 chatStorage.getMessagesPageable(
-                    groupName = GroupName(groupEntity.name),
+                    groupId = GroupId(groupEntity.id),
                     page = PageRequest.of(0, 1)
                 ).pages.firstOrNull()?.let { LastChatMessage.from(it) }
             }

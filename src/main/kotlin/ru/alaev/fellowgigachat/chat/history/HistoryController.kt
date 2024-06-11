@@ -7,22 +7,22 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import ru.alaev.fellowgigachat.chat.dto.ConvertibleToCommonResponse
 import ru.alaev.fellowgigachat.chat.dto.message.ChatMessageResponse
-import ru.alaev.fellowgigachat.domain.GroupName
+import ru.alaev.fellowgigachat.domain.GroupId
 
 @RestController
 class HistoryController(
     private val historyQuery: CollectPageableHistoryQueryHandler,
 ) {
 
-    @GetMapping("/history/{groupName}")
+    @GetMapping("/history/{groupId}")
     fun getHistory(
-        @PathVariable groupName: String,
+        @PathVariable groupId: Long,
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int
     ): PageableHistoryResponse {
         val result = historyQuery.handler(
             CollectPageableHistoryQuery(
-                groupName = GroupName(groupName),
+                groupId = GroupId(groupId),
                 page = PageRequest.of(pageNumber, pageSize)
             )
         )
