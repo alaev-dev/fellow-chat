@@ -65,14 +65,14 @@ data class UserActivityResponse(
         fun from(user: UserActivity): UserActivityResponse {
             return UserActivityResponse(
                 userStatus = user.userStatus.value,
-                lastMessages = user.lastMessages.map {
+                lastMessages = user.lastMessages.map { chatMessage ->
                     LastChatMessageResponse(
-                        id = it.id.toString(),
-                        chatName = it.chatName.value,
-                        sender = it.sender.value,
-                        members = it.members.map { it.value },
-                        message = it.message,
-                        timestamp = it.timestamp,
+                        id = chatMessage.id.toString(),
+                        chatName = chatMessage.chatName.value,
+                        sender = chatMessage.sender.value,
+                        members = chatMessage.members.map { it.value },
+                        message = chatMessage.message,
+                        timestamp = chatMessage.timestamp,
                     )
                 }
             )
