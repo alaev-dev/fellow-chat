@@ -28,13 +28,13 @@ class HistoryController(
         )
 
         return PageableHistoryResponse(
-            pages = result.pages.map { ChatMessageResponse.from(it) },
+            page = result.pages.map { ChatMessageResponse.from(it) },
             total = result.total
         )
     }
 }
 
 data class PageableHistoryResponse(
-    val pages: List<ChatMessageResponse>,
+    val page: List<ChatMessageResponse>,
     val total: Long,
 ) : ConvertibleToCommonResponse

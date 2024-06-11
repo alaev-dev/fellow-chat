@@ -14,6 +14,7 @@ interface ChatMessageRepository : CrudRepository<ChatMessageEntity, Long> {
         """
         SELECT b FROM ChatMessageEntity b
         WHERE b.group.name = :groupName
+        ORDER BY b.timestamp DESC
     """
     )
     fun findLatestMessages(groupName: GroupName, pageable: Pageable): List<ChatMessageEntity>
