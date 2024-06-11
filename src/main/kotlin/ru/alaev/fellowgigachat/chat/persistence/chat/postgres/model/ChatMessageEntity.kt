@@ -12,6 +12,7 @@ import jakarta.persistence.Table
 import java.time.LocalDateTime
 import ru.alaev.fellowgigachat.chat.persistence.group.postgres.model.GroupEntity
 import ru.alaev.fellowgigachat.chat.persistence.user.postgres.model.UserEntity
+import ru.alaev.fellowgigachat.domain.ChatMessage
 
 @Entity
 @Table(name = "messages")
@@ -34,5 +35,15 @@ open class ChatMessageEntity(
     @Column(nullable = false)
     open val timestamp: LocalDateTime
 ) {
+    fun toDomain(): ChatMessage {
+        return ChatMessage(
+            id = this.id,
+            sender = this.sender.toDomain().username,
+            group = group.toDomain(),
+            content = this.content,
+            timestamp = this.timestamp,
+        )
+    }
+
     constructor() : this(0, UserEntity(), GroupEntity(), "", LocalDateTime.MIN)
 }

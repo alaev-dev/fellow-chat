@@ -2,13 +2,19 @@ package ru.alaev.fellowgigachat.user.activity
 
 import java.time.LocalDateTime
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import ru.alaev.fellowgigachat.chat.persistence.user.UserStorage
 import ru.alaev.fellowgigachat.chat.persistence.user.postgres.model.UserEntity
 import ru.alaev.fellowgigachat.config.DomainException
 import ru.alaev.fellowgigachat.config.ErrorType.NOT_FOUND
+import ru.alaev.fellowgigachat.domain.Status
+import ru.alaev.fellowgigachat.domain.User
 import ru.alaev.fellowgigachat.domain.Username
 import ru.alaev.fellowgigachat.user.activity.handler.UserActivity
 import ru.alaev.fellowgigachat.user.activity.handler.UserActivityQuery
@@ -38,6 +44,21 @@ class UserController(
 
     companion object {
         private val log = LoggerFactory.getLogger(UserController::class.java)
+    }
+
+    @PostMapping("/users")
+    fun createUser(@RequestBody request: CreateUserRequest): ResponseEntity<Unit> {
+        if (userStorage.getUser(Username(request.username)) == null) {
+            userStorage.createUser(
+                User(
+                    username = Username(request.username),
+                    status = Status(request.status),
+                    groups = emptyList(),
+                )
+            )
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 }
 
@@ -87,4 +108,9 @@ data class LastChatMessageResponse(
     val members: List<String>,
     val message: String,
     val timestamp: LocalDateTime,
+)
+
+data class CreateUserRequest(
+    val username: String,
+    val status: String,
 )

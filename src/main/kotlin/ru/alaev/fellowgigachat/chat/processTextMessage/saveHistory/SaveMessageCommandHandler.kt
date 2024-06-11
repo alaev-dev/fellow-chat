@@ -9,7 +9,7 @@ import ru.alaev.fellowgigachat.domain.ChatMessage
 class SaveMessageCommandHandler(
     private val storage: ChatStorage,
 ) {
-    fun handle(command: SaveHistoryCommand): MessageId {
+    fun handle(command: SaveHistoryCommand): ChatMessage {
         log.info("Save message for: ${command.content.sender.value}")
 
         return storage.saveMessage(command.content)
@@ -23,6 +23,3 @@ class SaveMessageCommandHandler(
 data class SaveHistoryCommand(
     val content: ChatMessage,
 )
-
-@JvmInline
-value class MessageId(val value: Long)

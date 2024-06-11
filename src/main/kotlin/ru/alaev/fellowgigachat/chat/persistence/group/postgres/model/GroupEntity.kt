@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToMany
 import jakarta.persistence.Table
 import ru.alaev.fellowgigachat.chat.persistence.user.postgres.model.UserEntity
 import ru.alaev.fellowgigachat.domain.Group
+import ru.alaev.fellowgigachat.domain.GroupId
 import ru.alaev.fellowgigachat.domain.GroupName
 import ru.alaev.fellowgigachat.domain.Username
 
@@ -37,6 +38,7 @@ open class GroupEntity(
 
     fun toDomain(): Group {
         return Group(
+            id = GroupId(id),
             name = GroupName(name),
             members = users.map { Username(it.username) }
         )

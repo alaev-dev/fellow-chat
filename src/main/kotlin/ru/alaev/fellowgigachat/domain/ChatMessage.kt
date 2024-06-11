@@ -9,10 +9,10 @@ data class ChatMessage(
     val content: String,
     val timestamp: LocalDateTime,
 ) {
-    constructor(from: Username, to: Username, message: String) : this(
+    constructor(from: Username, to: GroupId, message: String) : this(
         id = -1,
         sender = from,
-        group = Group(GroupName(to.value), listOf(from, to)),
+        group = Group(to, GroupName("PARASHA"), emptyList()),
         content = message,
         timestamp = LocalDateTime.now(),
     )

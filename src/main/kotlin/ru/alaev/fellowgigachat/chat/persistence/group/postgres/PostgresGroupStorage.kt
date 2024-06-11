@@ -7,6 +7,7 @@ import ru.alaev.fellowgigachat.chat.persistence.group.GroupStorage
 import ru.alaev.fellowgigachat.chat.persistence.group.postgres.model.GroupEntity
 import ru.alaev.fellowgigachat.chat.persistence.group.postgres.repo.GroupRepository
 import ru.alaev.fellowgigachat.chat.persistence.user.UserStorage
+import ru.alaev.fellowgigachat.domain.GroupId
 import ru.alaev.fellowgigachat.domain.GroupName
 import ru.alaev.fellowgigachat.domain.Username
 
@@ -53,5 +54,26 @@ class PostgresGroupStorage(
     override fun getMembers(groupName: GroupName): List<Username> {
         logger.info("getMembers called with groupName: ${groupName.value}")
         return groupRepository.findUsersByGroup(groupName.value).map { Username(it.username) }
+    }
+
+    override fun createGroupForMembers(usernames: List<Username>): GroupEntity {
+        getGroupByMembers(usernames)?.let { return it }
+
+        return groupRepository.save(
+            GroupEntity(
+                id = 0,
+                name = "PERSONAL-${usernames.sortedBy { it.value }.joinToString("-") { it.value }}",
+                users = usernames.map { userStorage.getUser(it) ?: userStorage.createEmptyUser(it) }.toMutableSet()
+            )
+        )
+    }
+
+    override fun getGroupByMembers(usernames: List<Username>): GroupEntity? {
+        if (usernames.isEmpty()) return null
+        return groupRepository.findByExactUsernames(usernames.map { it.value }.toSet(), usernames.toSet().size.toLong())
+    }
+
+    override fun getById(id: GroupId): GroupEntity? {
+        return groupRepository.findById(id.value).orElse(null)
     }
 }

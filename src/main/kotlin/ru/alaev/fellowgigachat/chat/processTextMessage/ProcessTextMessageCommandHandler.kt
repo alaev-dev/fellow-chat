@@ -19,13 +19,12 @@ class ProcessTextMessageCommandHandler(
     fun handle(command: ProcessTextMessageCommand) {
         val message = command.chatMessage.toDomain(command.from)
 
-        val messageId = saveMessageCommandHandler.handle(SaveHistoryCommand(message))
-        message.id = messageId.value
+        val chatMessage = saveMessageCommandHandler.handle(SaveHistoryCommand(message))
 
-        message.group.members.toSet().forEach {
+        chatMessage.group.members.toSet().forEach {
             sessionManager.sendMessageToSession(
                 username = it,
-                message = ChatMessageResponse.from(message).toCommonResponse(MESSAGE)
+                message = ChatMessageResponse.from(chatMessage).toCommonResponse(MESSAGE)
             )
         }
 
