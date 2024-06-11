@@ -3,7 +3,7 @@ package ru.alaev.fellowgigachat.domain
 import java.time.LocalDateTime
 
 data class ChatMessage(
-    val id: Long,
+    var id: Long,
     val sender: Username,
     val group: Group,
     val content: String,

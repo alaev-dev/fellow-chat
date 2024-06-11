@@ -9,10 +9,10 @@ import ru.alaev.fellowgigachat.domain.ChatMessage
 class SaveMessageCommandHandler(
     private val storage: ChatStorage,
 ) {
-    fun handle(command: SaveHistoryCommand) {
-        storage.saveMessage(command.content)
-
+    fun handle(command: SaveHistoryCommand): MessageId {
         log.info("Save message for: ${command.content.sender.value}")
+
+        return storage.saveMessage(command.content)
     }
 
     companion object {
@@ -23,3 +23,6 @@ class SaveMessageCommandHandler(
 data class SaveHistoryCommand(
     val content: ChatMessage,
 )
+
+@JvmInline
+value class MessageId(val value: Long)

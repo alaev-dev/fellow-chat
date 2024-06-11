@@ -10,6 +10,7 @@ import ru.alaev.fellowgigachat.chat.persistence.chat.postgres.model.ChatMessageE
 import ru.alaev.fellowgigachat.chat.persistence.chat.postgres.repo.ChatMessageRepository
 import ru.alaev.fellowgigachat.chat.persistence.group.GroupStorage
 import ru.alaev.fellowgigachat.chat.persistence.user.UserStorage
+import ru.alaev.fellowgigachat.chat.processTextMessage.saveHistory.MessageId
 import ru.alaev.fellowgigachat.domain.ChatMessage
 import ru.alaev.fellowgigachat.domain.Group
 import ru.alaev.fellowgigachat.domain.GroupName
@@ -23,7 +24,7 @@ class PostgresChatStorage(
 ) : ChatStorage {
 
     @Transactional
-    override fun saveMessage(chatMessage: ChatMessage) {
+    override fun saveMessage(chatMessage: ChatMessage): MessageId {
         val fromUser = userStorage.getUser(chatMessage.sender) ?: userStorage.createEmptyUser(chatMessage.sender)
         val group = groupStorage.getOrCreate(chatMessage.group.name, chatMessage.group.members)
         logger.info("Group ${chatMessage.group.name} created")
@@ -35,7 +36,7 @@ class PostgresChatStorage(
             content = chatMessage.content,
             timestamp = chatMessage.timestamp,
         )
-        messageRepository.save(entity)
+        return MessageId(messageRepository.save(entity).id)
     }
 
     override fun getMessagesPageable(groupName: GroupName, page: Pageable): CollectPageableHistoryQueryResult {

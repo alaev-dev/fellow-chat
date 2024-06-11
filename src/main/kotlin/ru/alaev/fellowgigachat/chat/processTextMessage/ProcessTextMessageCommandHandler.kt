@@ -19,7 +19,8 @@ class ProcessTextMessageCommandHandler(
     fun handle(command: ProcessTextMessageCommand) {
         val message = command.chatMessage.toDomain(command.from)
 
-        saveMessageCommandHandler.handle(SaveHistoryCommand(message))
+        val messageId = saveMessageCommandHandler.handle(SaveHistoryCommand(message))
+        message.id = messageId.value
 
         message.group.members.toSet().forEach {
             sessionManager.sendMessageToSession(
