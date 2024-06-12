@@ -92,7 +92,7 @@ data class UserActivityResponse(
                         chatId = chatMessage.chatId.toString(),
                         chatName = chatMessage.chatName.value,
                         sender = chatMessage.sender.value,
-                        members = chatMessage.members.map { it.value },
+                        members = chatMessage.members.map { it.value }.sorted(),
                         message = chatMessage.message,
                         timestamp = chatMessage.timestamp,
                     )
