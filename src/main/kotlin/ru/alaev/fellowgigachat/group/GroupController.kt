@@ -3,17 +3,22 @@ package ru.alaev.fellowgigachat.group
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import ru.alaev.fellowgigachat.chat.persistence.group.GroupStorage
 import ru.alaev.fellowgigachat.domain.Username
+import ru.alaev.fellowgigachat.group.hander.GroupCreationCommand
+import ru.alaev.fellowgigachat.group.hander.GroupCreationCommandHandler
 
 @RestController
 class GroupController(
-    private val storage: GroupStorage
+    private val groupCreationCommandHandler: GroupCreationCommandHandler,
 ) {
 
     @PostMapping("/groups")
     fun createGroup(@RequestBody request: CreateGroupRequest): CreateGroupResponse {
-        return CreateGroupResponse(storage.createGroupForMembers(request.members.map { Username(it) }).id.toString())
+        return CreateGroupResponse(groupCreationCommandHandler.handle(
+            GroupCreationCommand(
+                members = request.members.map { Username(it) }
+            )
+        ).value.toString())
     }
 }
 

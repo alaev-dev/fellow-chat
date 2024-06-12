@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 enum class ResponseType {
     MESSAGE,
     STATUS_CHANGE,
-    HISTORY
+    GROUP_CREATE,
 }
 
 // Общий класс для хранения данных
