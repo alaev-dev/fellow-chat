@@ -16,13 +16,13 @@ class HistoryController(
 
     @GetMapping("/history/{groupId}")
     fun getHistory(
-        @PathVariable groupId: Long,
+        @PathVariable groupId: String,
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int
     ): PageableHistoryResponse {
         val result = historyQuery.handler(
             CollectPageableHistoryQuery(
-                groupId = GroupId(groupId),
+                groupId = GroupId.fromString(groupId),
                 page = PageRequest.of(pageNumber, pageSize)
             )
         )

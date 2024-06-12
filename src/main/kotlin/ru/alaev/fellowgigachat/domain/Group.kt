@@ -10,4 +10,10 @@ data class Group(
 value class GroupName(val value: String)
 
 @JvmInline
-value class GroupId(val value: Long)
+value class GroupId(val value: Long) {
+    companion object {
+        fun fromString(groupId: String): GroupId {
+            return GroupId(groupId.toLong())
+        }
+    }
+}
