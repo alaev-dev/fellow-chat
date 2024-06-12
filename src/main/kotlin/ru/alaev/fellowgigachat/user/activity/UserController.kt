@@ -89,6 +89,7 @@ data class UserActivityResponse(
                 lastMessages = user.lastMessages.map { chatMessage ->
                     LastChatMessageResponse(
                         id = chatMessage.id.toString(),
+                        chatId = chatMessage.chatId.toString(),
                         chatName = chatMessage.chatName.value,
                         sender = chatMessage.sender.value,
                         members = chatMessage.members.map { it.value },
@@ -103,6 +104,7 @@ data class UserActivityResponse(
 
 data class LastChatMessageResponse(
     val id: String,
+    val chatId: String,
     val chatName: String,
     val sender: String,
     val members: List<String>,

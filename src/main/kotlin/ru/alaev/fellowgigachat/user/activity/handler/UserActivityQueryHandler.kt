@@ -48,6 +48,7 @@ data class UserActivity(
 
 data class LastChatMessage(
     val id: Long,
+    val chatId: Long,
     val sender: Username,
     val chatName: GroupName,
     val members: List<Username>,
@@ -58,6 +59,7 @@ data class LastChatMessage(
         fun from(message: ChatMessage): LastChatMessage {
             return LastChatMessage(
                 id = message.id,
+                chatId = message.group.id.value,
                 sender = message.sender,
                 chatName = message.group.name,
                 members = message.group.members,
