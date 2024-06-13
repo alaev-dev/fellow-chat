@@ -11,9 +11,10 @@ import org.springframework.web.socket.handler.TextWebSocketHandler
 import ru.alaev.fellowgigachat.chat.dto.message.WebsocketChatMessageRequest
 import ru.alaev.fellowgigachat.chat.processConnection.ConnectionProcessCommand
 import ru.alaev.fellowgigachat.chat.processConnection.ConnectionProcessCommandHandler
+import ru.alaev.fellowgigachat.chat.processDisconnect.ProcessDisconnectCommand
+import ru.alaev.fellowgigachat.chat.processDisconnect.ProcessDisconnectCommandHandler
 import ru.alaev.fellowgigachat.chat.processTextMessage.ProcessTextMessageCommand
 import ru.alaev.fellowgigachat.chat.processTextMessage.ProcessTextMessageCommandHandler
-import ru.alaev.fellowgigachat.chat.sessionManager.SessionManager
 import ru.alaev.fellowgigachat.domain.Username
 
 @Component
@@ -21,7 +22,7 @@ class ChatHandler(
     private val connectionProcess: ConnectionProcessCommandHandler,
     private val processTextMessageCommandHandler: ProcessTextMessageCommandHandler,
     private val objectMapper: ObjectMapper,
-    private val sessionManager: SessionManager,
+    private val disconnectCommandHandler: ProcessDisconnectCommandHandler,
 ) : TextWebSocketHandler() {
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
@@ -39,7 +40,8 @@ class ChatHandler(
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
         val username = getUsername(session)
-        sessionManager.removeConnection(username)
+        disconnectCommandHandler.handle(ProcessDisconnectCommand(username))
+
         log.info("Session closed for: ${username.value} with status :: ${status.reason} and code :: ${status.code}")
     }
 

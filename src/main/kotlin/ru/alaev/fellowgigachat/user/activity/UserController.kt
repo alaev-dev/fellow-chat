@@ -13,8 +13,6 @@ import ru.alaev.fellowgigachat.chat.persistence.user.UserStorage
 import ru.alaev.fellowgigachat.chat.persistence.user.postgres.model.UserEntity
 import ru.alaev.fellowgigachat.config.DomainException
 import ru.alaev.fellowgigachat.config.ErrorType.NOT_FOUND
-import ru.alaev.fellowgigachat.domain.Status
-import ru.alaev.fellowgigachat.domain.User
 import ru.alaev.fellowgigachat.domain.Username
 import ru.alaev.fellowgigachat.user.activity.handler.UserActivity
 import ru.alaev.fellowgigachat.user.activity.handler.UserActivityQuery
@@ -49,13 +47,7 @@ class UserController(
     @PostMapping("/users")
     fun createUser(@RequestBody request: CreateUserRequest): ResponseEntity<Unit> {
         if (userStorage.getUser(Username(request.username)) == null) {
-            userStorage.createUser(
-                User(
-                    username = Username(request.username),
-                    status = Status(request.status),
-                    groups = emptyList(),
-                )
-            )
+            userStorage.createEmptyUser(Username(request.username))
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).build()
@@ -66,6 +58,8 @@ data class UserResponse(
     val id: String,
     val username: String,
     val status: String,
+    val isOnline: Boolean,
+    val lastLoginTimestamp: LocalDateTime?,
 ) {
     companion object {
         fun from(user: UserEntity): UserResponse {
@@ -73,6 +67,8 @@ data class UserResponse(
                 id = user.id.toString(),
                 username = user.username,
                 status = user.status,
+                isOnline = user.isOnline,
+                lastLoginTimestamp = user.lastLoginTimestamp
             )
         }
     }
