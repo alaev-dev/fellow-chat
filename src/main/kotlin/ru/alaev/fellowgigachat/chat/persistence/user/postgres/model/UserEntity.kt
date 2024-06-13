@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.Table
+import java.time.LocalDateTime
 import ru.alaev.fellowgigachat.chat.persistence.group.postgres.model.GroupEntity
 import ru.alaev.fellowgigachat.domain.GroupName
 import ru.alaev.fellowgigachat.domain.Status
@@ -27,6 +28,12 @@ open class UserEntity(
     @Column(nullable = false)
     open var status: String,
 
+    @Column(nullable = false)
+    open var isOnline: Boolean,
+
+    @Column(nullable = true)
+    open var lastLoginTimestamp: LocalDateTime?,
+
     @ManyToMany
     @JoinTable(
         name = "users_groups",
@@ -39,7 +46,9 @@ open class UserEntity(
         return User(
             username = Username(username),
             status = Status(status),
-            groups = groups.map { GroupName(it.name) }
+            groups = groups.map { GroupName(it.name) },
+            isOnline = isOnline,
+            lastLoginTimestamp = lastLoginTimestamp,
         )
     }
 
@@ -48,10 +57,12 @@ open class UserEntity(
             return UserEntity(
                 id = -1,
                 username = user.username.value,
-                status = user.status.value
+                status = user.status.value,
+                isOnline = user.isOnline,
+                lastLoginTimestamp = user.lastLoginTimestamp,
             )
         }
     }
 
-    constructor() : this(-1, "", "")
+    constructor() : this(-1, "", "", true, null)
 }

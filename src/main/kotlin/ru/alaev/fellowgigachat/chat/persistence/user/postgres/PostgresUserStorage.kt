@@ -29,6 +29,8 @@ class PostgresUserStorage(
             id = -1,
             username = username.value,
             status = "NEW",
+            isOnline = false,
+            lastLoginTimestamp = null,
         )
         return userRepo.save(user)
     }
@@ -44,6 +46,12 @@ class PostgresUserStorage(
 
         val updatedUser = userRepo.findByUsername(username.value)
         log.info("Updated status of user ${updatedUser?.username} is ${updatedUser?.status}")
+    }
+
+    override fun updateOnline(username: Username): User {
+        val user = getUser(username) ?: createEmptyUser(username)
+        user.isOnline = true
+        return user.toDomain()
     }
 
     companion object {

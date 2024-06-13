@@ -10,4 +10,5 @@ interface UserStorage {
     fun getUser(username: Username): UserEntity?
     fun createEmptyUser(username: Username): UserEntity
     fun changeStatus(username: Username, newStatus: Status)
+    fun updateOnline(username: Username): User
 }

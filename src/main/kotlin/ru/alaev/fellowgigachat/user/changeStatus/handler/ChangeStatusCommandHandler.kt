@@ -1,5 +1,6 @@
 package ru.alaev.fellowgigachat.user.changeStatus.handler
 
+import java.time.LocalDateTime
 import org.springframework.stereotype.Service
 import ru.alaev.fellowgigachat.chat.notify.NotificationService
 import ru.alaev.fellowgigachat.chat.persistence.user.UserStorage
@@ -27,6 +28,8 @@ class ChangeStatusCommandHandler(
             username = command.username,
             status = command.status,
             groups = emptyList(),
+            isOnline = true,
+            lastLoginTimestamp = LocalDateTime.now(),
         )
         userStorage.createUser(newUser)
         return newUser
