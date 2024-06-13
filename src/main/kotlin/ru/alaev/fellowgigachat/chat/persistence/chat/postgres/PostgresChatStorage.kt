@@ -63,18 +63,18 @@ class PostgresChatStorage(
             )
         }
 
-        val messages = messageRepository.findLatestMessages(groupId, page)
-            .map { entity ->
-                ChatMessage(
-                    id = entity.id,
-                    sender = Username(entity.sender.username),
-                    group = entity.group.toDomain(),
-                    content = entity.content,
-                    timestamp = entity.timestamp
-                )
-            }
+        val messagePage = messageRepository.findLatestMessages(groupId.value, page)
+        val messages = messagePage.content.map { entity ->
+            ChatMessage(
+                id = entity.id,
+                sender = Username(entity.sender.username),
+                group = entity.group.toDomain(),
+                content = entity.content,
+                timestamp = entity.timestamp
+            )
+        }
 
-        val totalMessages = messageRepository.countTotalMessagesForGroup(groupId)
+        val totalMessages = messagePage.totalElements
 
         logger.info("Found ${messages.size} messages for group ${groupId.value}, total messages: $totalMessages")
 
