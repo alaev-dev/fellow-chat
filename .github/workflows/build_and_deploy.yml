@@ -115,8 +115,6 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/${{ secrets.SERVER_USERNAME }}/deploy/fellow-chat
-            sudo docker-compose down
             rm -rf /home/${{ secrets.SERVER_USERNAME }}/deploy/fellow-chat/*
 
       - name: Copy Docker Compose file
@@ -136,4 +134,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/${{ secrets.SERVER_USERNAME }}/deploy/fellow-chat
+            sudo docker-compose pull
+            sudo docker-compose down
             sudo docker-compose up -d
