@@ -1,0 +1,3 @@
+<property name="hibernate.show_sql">true</property>
+<property name="hibernate.format_sql">true</property>
+<property name="hibernate.use_sql_comments">true</property>
