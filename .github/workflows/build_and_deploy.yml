@@ -88,7 +88,13 @@ jobs:
       - name: Deploy Docker image
         run: |
           docker tag giga-fellow-chat:latest alaevdev/fellow-chat:${{ env.VERSION }}
+
+          # Пушим образ с текущей версией
           docker push alaevdev/fellow-chat:${{ env.VERSION }}
+
+          # Обновляем тег latest и пушим его
+          docker tag alaevdev/fellow-chat:${{ env.VERSION }} alaevdev/fellow-chat:latest
+          docker push alaevdev/fellow-chat:latest
 
   run:
     runs-on: ubuntu-latest
