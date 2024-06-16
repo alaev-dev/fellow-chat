@@ -2,8 +2,8 @@ name: Build and Deploy
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*.*.*'
 
 jobs:
   build:
@@ -52,13 +52,6 @@ jobs:
         with:
           cache-binary: true
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          registry: svalka.cr.cloud.ru
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
       - name: Build and export
         uses: docker/build-push-action@v5
         with:
@@ -88,17 +81,20 @@ jobs:
           docker load --input /tmp/myimage.tar
           docker image ls -a
 
+      - name: Get version from tag
+        id: vars
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: svalka.cr.cloud.ru
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Deploy Docker image
         run: |
-          docker tag giga-fellow-chat:latest svalka.cr.cloud.ru/giga-fellow-chat:latest
-          docker push svalka.cr.cloud.ru/giga-fellow-chat:latest
+          docker tag giga-fellow-chat:latest alaevdev/fellow-chat:${{ env.VERSION }}
+          docker push alaevdev/fellow-chat:${{ env.VERSION }}
 
   run:
     runs-on: ubuntu-latest

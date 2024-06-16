@@ -1,6 +1,6 @@
 services:
   app:
-    image: svalka.cr.cloud.ru/giga-fellow-chat:latest
+    image: alaevdev/fellow-chat
     container_name: giga-fellow-chat
     ports:
       - "8080:8080"
