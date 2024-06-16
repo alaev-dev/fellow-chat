@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21 as jre-build
+FROM eclipse-temurin:21 AS jre-build
 
 COPY build/libs/fellow-gigachat-0.0.1.jar /app/app.jar
 WORKDIR /app
@@ -14,7 +14,7 @@ RUN jdeps \
     app.jar > modules.txt
 
 # Create a custom Java runtime
-RUN $JAVA_HOME/bin/jlink \
+RUN "$JAVA_HOME"/bin/jlink \
          --add-modules $(cat modules.txt) \
          --strip-debug \
          --no-man-pages \
