@@ -2,6 +2,7 @@ package ru.alaev.fellowgigachat.chat.persistence.chat.postgres
 
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.alaev.fellowgigachat.chat.persistence.chat.ChatStorage
@@ -37,15 +38,7 @@ class PostgresChatStorage(
             throw DomainException("Group ${chatMessage.group.id.value} not found", NOT_FOUND)
         }
 
-        val entity = ChatMessageEntity(
-            id = 0,
-            sender = fromUser,
-            group = group,
-            content = chatMessage.content,
-            timestamp = chatMessage.timestamp,
-        )
-
-        val savedMessage = messageRepository.save(entity).toDomain()
+        val savedMessage = messageRepository.save(ChatMessageEntity.from(chatMessage, fromUser, group)).toDomain()
         logger.info("Message saved with ID ${savedMessage.id}")
 
         return savedMessage
@@ -70,7 +63,8 @@ class PostgresChatStorage(
                 sender = Username(entity.sender.username),
                 group = entity.group.toDomain(),
                 content = entity.content,
-                timestamp = entity.timestamp
+                timestamp = entity.timestamp,
+                isRead = entity.isRead,
             )
         }
 
@@ -82,6 +76,16 @@ class PostgresChatStorage(
             pages = messages,
             total = totalMessages
         )
+    }
+
+    override fun getMessageByID(messageID: Long): ChatMessageEntity? {
+        return messageRepository.findByIdOrNull(messageID)
+    }
+
+    override fun updateRead(messageID: Long) : ChatMessage {
+        val message = getMessageByID(messageID) ?: throw DomainException("Message $messageID not found", NOT_FOUND)
+        message.isRead = true
+        return message.toDomain()
     }
 
     companion object {
