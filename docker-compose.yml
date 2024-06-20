@@ -12,7 +12,7 @@ services:
       - db
 
   db:
-    image: postgres:latest
+    image: postgres:15.4
     container_name: postgres_db
     ports:
       - "5432:5432"
