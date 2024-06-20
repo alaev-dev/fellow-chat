@@ -12,7 +12,7 @@ fi
 
 # Собираем Docker образ
 echo "Building Docker image..."
-docker build -t svalka.cr.cloud.ru/giga-fellow-chat:latest .
+docker build -t alaevdev/fellow-chat:latest .
 
 # Проверяем успешность выполнения команды
 if [ $? -ne 0 ]; then
