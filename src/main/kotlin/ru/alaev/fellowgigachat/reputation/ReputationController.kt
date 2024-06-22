@@ -1,7 +1,7 @@
 package ru.alaev.fellowgigachat.reputation
 
 import org.springframework.web.bind.annotation.*
-import ru.alaev.fellowgigachat.domain.Count
+import ru.alaev.fellowgigachat.domain.RepCount
 import ru.alaev.fellowgigachat.domain.Username
 import ru.alaev.fellowgigachat.reputation.handler.ReputationCommandHandler
 import ru.alaev.fellowgigachat.reputation.handler.ReputationQueryCommand
@@ -20,11 +20,11 @@ class ClickerController(
 
         return ReputationResponse(
             res.username.value,
-            res.count.value
+            res.repCount.value
         )
     }
 
-    @PutMapping("/reputation/{username}")
+    @PatchMapping("/reputation/{username}")
     fun putReputation(
         @PathVariable username: String,
         @RequestBody request: ReputationUpdateRequest
@@ -32,13 +32,13 @@ class ClickerController(
         val res = reputationCommandHandler.handle(
             ReputationUpdateCommand(
                 Username(username),
-                Count(request.count)
+                RepCount(request.count)
             )
         )
 
         return ReputationResponse(
             res.username.value,
-            res.count.value
+            res.repCount.value
         )
     }
 }

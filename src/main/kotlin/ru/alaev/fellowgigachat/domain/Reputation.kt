@@ -2,14 +2,14 @@ package ru.alaev.fellowgigachat.domain
 
 data class Reputation(
     val username: Username,
-    val count: Count,
+    val repCount: RepCount,
 )
 
 @JvmInline
-value class Count(val value: Long) {
+value class RepCount(val value: Long) {
     companion object {
-        fun fromString(count: String): Count {
-            return Count(count.toLong())
+        fun fromString(repCount: String): RepCount {
+            return RepCount(repCount.toLong())
         }
     }
 }

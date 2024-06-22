@@ -9,7 +9,9 @@ import ru.alaev.fellowgigachat.chat.persistence.reputation.postgres.repo.Reputat
 import ru.alaev.fellowgigachat.chat.persistence.user.UserStorage
 import ru.alaev.fellowgigachat.config.DomainException
 import ru.alaev.fellowgigachat.config.ErrorType
-import ru.alaev.fellowgigachat.domain.*
+import ru.alaev.fellowgigachat.domain.RepCount
+import ru.alaev.fellowgigachat.domain.Reputation
+import ru.alaev.fellowgigachat.domain.Username
 
 @Service
 class PostgresReputationStorage(
@@ -26,7 +28,6 @@ class PostgresReputationStorage(
     @Transactional
     override fun create(username: Username): Reputation {
         val user = userStorage.getUser(username) ?: run {
-            logger.error("User ${username.value} not found")
             throw DomainException("User ${username.value} not found", ErrorType.NOT_FOUND)
         }
         val entity = ReputationEntity(0, user, 0)
@@ -35,13 +36,12 @@ class PostgresReputationStorage(
     }
 
     @Transactional
-    override fun updateReputation(username: Username, count: Count): Reputation {
+    override fun updateReputation(username: Username, repCount: RepCount): Reputation {
         val rep = reputationRepository.findByUsername(username.value) ?: run {
-            logger.error("Reputation for user ${username.value} not found")
             throw DomainException("Reputation for user ${username.value} not found", ErrorType.NOT_FOUND)
         }
 
-        rep.count = count.value
+        rep.count = repCount.value
 
         return rep.toDomain()
     }
