@@ -33,7 +33,10 @@ open class ChatMessageEntity(
     open val content: String,
 
     @Column(nullable = false)
-    open val timestamp: LocalDateTime
+    open val timestamp: LocalDateTime,
+
+    @Column(nullable = false)
+    open var isRead: Boolean,
 ) {
     fun toDomain(): ChatMessage {
         return ChatMessage(
@@ -42,8 +45,22 @@ open class ChatMessageEntity(
             group = group.toDomain(),
             content = this.content,
             timestamp = this.timestamp,
+            isRead = this.isRead,
         )
     }
 
-    constructor() : this(0, UserEntity(), GroupEntity(), "", LocalDateTime.MIN)
+    constructor() : this(0, UserEntity(), GroupEntity(), "", LocalDateTime.MIN, false)
+
+    companion object {
+        fun from(chatMessage: ChatMessage, fromUser: UserEntity, group: GroupEntity): ChatMessageEntity {
+            return ChatMessageEntity(
+                id = 0,
+                sender = fromUser,
+                group = group,
+                content = chatMessage.content,
+                timestamp = chatMessage.timestamp,
+                isRead = chatMessage.isRead,
+            )
+        }
+    }
 }
